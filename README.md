@@ -101,6 +101,25 @@ Framework Preset は「Other」のままで静的サイトとして公開され�
 
 `css/styles.css` の冒頭 `:root` のCSS変数を編集。
 
+## デプロイ後のキャッシュ対策
+
+iOS Safariなど一部のブラウザはCSS/JSを強くキャッシュするため、コード更新後も古い画面が表示されることがあります。本プロジェクトでは次の対策を入れています:
+
+- `vercel.json` で HTML/CSS/JS に `must-revalidate` を指定
+- `index.html` のヘッダーに `Cache-Control: no-cache` メタタグ
+- CSS/JSの `src` に `?v=2.1.0` のようなバージョンクエリ
+
+**コード更新時の運用ルール**:
+`index.html` の以下2箇所のバージョン番号を上げてから git push してください。
+
+```html
+<link rel="stylesheet" href="/css/styles.css?v=2.1.0">
+<script type="module" src="/js/main.js?v=2.1.0"></script>
+```
+
+例:`?v=2.1.0` → `?v=2.1.1` のように変更。
+これでユーザーの端末に必ず新しいファイルが配信されます。
+
 ## ライセンス
 
 MIT
