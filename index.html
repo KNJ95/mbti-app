@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クイックMBTI診断 — 5分でわかる性格タイプ</title>
+  <meta name="description" content="5分で完了する16タイプ性格診断。社内研修・イベント向けの簡易MBTI診断アプリ。">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="container">
+
+    <header class="header">
+      <div class="eyebrow">— Quick Personality Check —</div>
+      <h1 class="title">5分でわかる<br>性格タイプ診断</h1>
+      <p class="subtitle">直感で答えるだけ・全16問</p>
+    </header>
+
+    <!-- スタート画面 -->
+    <section id="intro" class="intro fade-in">
+      <p class="intro-lead">
+        この診断では、16の質問から<br>
+        あなたの性格傾向を4つの軸で分析し、<br>
+        16タイプの中からあてはまるタイプをお伝えします。
+      </p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-num">16</div>
+          <div class="meta-label">Questions</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-num">5<span style="font-size: 18px;">min</span></div>
+          <div class="meta-label">Time</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-num">16</div>
+          <div class="meta-label">Types</div>
+        </div>
+      </div>
+
+      <div class="ornament">✦ ✦ ✦</div>
+
+      <button class="btn" id="start-btn">診断をはじめる</button>
+    </section>
+
+    <!-- 質問画面 -->
+    <section id="quiz" class="hidden">
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span>Question <strong id="q-current">1</strong> / 16</span>
+          <span id="q-percent">6%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="card" id="question-card">
+        <div class="q-number" id="q-label">QUESTION 01</div>
+        <div class="q-text" id="q-text"></div>
+        <div class="options" id="q-options"></div>
+      </div>
+    </section>
+
+    <!-- 結果画面 -->
+    <section id="result" class="result hidden">
+      <div class="result-eyebrow">— Your Type Is —</div>
+      <div class="result-type" id="result-type">INTJ</div>
+      <div class="result-nickname" id="result-nickname">建築家</div>
+      <div class="result-divider"></div>
+      <p class="result-desc" id="result-desc"></p>
+      <div class="result-actions">
+        <button class="btn" id="restart-btn">もう一度診断する</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
