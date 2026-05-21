@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>クイックMBTI診断 — 5分でわかる性格タイプ</title>
-  <meta name="description" content="5分で完了する16タイプ性格診断。社内研修・イベント向けの簡易MBTI診断アプリ。">
+  <title>クイックMBTI診断 — 性格タイプ診断</title>
+  <meta name="description" content="16問の5段階評価で判定するMBTI簡易診断アプリ。社内研修・イベント向け。">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +17,9 @@
   <div class="container">
 
     <header class="header">
-      <div class="eyebrow">— Quick Personality Check —</div>
-      <h1 class="title">5分でわかる<br>性格タイプ診断</h1>
-      <p class="subtitle">直感で答えるだけ・全16問</p>
+      <div class="eyebrow">— Personality Check —</div>
+      <h1 class="title">あなたの<br>性格タイプ診断</h1>
+      <p class="subtitle">5段階で答えるだけ・全16問</p>
     </header>
 
     <!-- スタート画面 -->
@@ -65,7 +65,14 @@
       <div class="card" id="question-card">
         <div class="q-number" id="q-label">QUESTION 01</div>
         <div class="q-text" id="q-text"></div>
-        <div class="options" id="q-options"></div>
+        <div class="likert" id="q-likert"></div>
+        <div class="likert-labels">
+          <span>そう思わない</span>
+          <span>そう思う</span>
+        </div>
+        <div class="nav-row">
+          <button class="btn-ghost" id="prev-btn" disabled>← 前へ</button>
+        </div>
       </div>
     </section>
 
@@ -76,6 +83,15 @@
       <div class="result-nickname" id="result-nickname">建築家</div>
       <div class="result-divider"></div>
       <p class="result-desc" id="result-desc"></p>
+
+      <!-- スコア内訳 -->
+      <div class="score-breakdown" id="score-breakdown"></div>
+
+      <p class="result-disclaimer">
+        ※ この診断は簡易版です。正式なMBTI®診断ではありません。<br>
+        結果は自己理解のための参考としてご活用ください。
+      </p>
+
       <div class="result-actions">
         <button class="btn" id="restart-btn">もう一度診断する</button>
       </div>

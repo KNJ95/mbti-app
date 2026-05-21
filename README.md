@@ -1,109 +1,105 @@
 # クイックMBTI診断
 
-5分で完了するMBTI簡易診断アプリ。社内研修・イベント向け。
+16問・5段階評価で判定するMBTI簡易診断アプリ。社内研修・イベント向け。
 
-- 全16問・2択式・5分以内に完了
+- 全16問・5段階(リッカート尺度)
 - 4軸(E/I・S/N・T/F・J/P)から16タイプを判定
-- 結果はタイプ名と一言説明のみのシンプル構成
-- スマホ/PC対応(レスポンシブ)
+- 重みづけ合計方式 + パーセンテージ表示
+- 1問ずつ「前へ戻る」可能
+- 回答時間 約5分
 - ビルド不要のピュアHTML/CSS/JavaScript
 
 ## ディレクトリ構成
 
 ```
 .
-├── index.html          # エントリーポイント
-├── css/
-│   └── styles.css      # スタイル
+├── index.html
+├── css/styles.css
 ├── js/
-│   ├── main.js         # アプリ制御(エントリ)
-│   ├── questions.js    # 質問データ
-│   └── types.js        # 16タイプの説明
-├── vercel.json         # Vercel設定
+│   ├── main.js         # アプリ制御・UI
+│   ├── questions.js    # 質問データ(16問)
+│   ├── types.js        # 16タイプの説明
+│   └── scoring.js      # 判定ロジック(独立モジュール)
+├── vercel.json
 ├── package.json
 ├── .gitignore
 └── README.md
 ```
 
-## ローカルで動かす
+## 判定ロジック
 
-ES Modules を使っているため、`file://` で直接開くと動きません。簡易サーバーで起動してください。
+### データ構造
 
-```bash
-# npm経由
-npm start
-
-# あるいは Python があるなら
-python3 -m http.server 3000
-```
-
-ブラウザで `http://localhost:3000` を開きます。
-
-## GitHubで管理する
-
-```bash
-cd mbti-app
-git init
-git add .
-git commit -m "Initial commit: MBTI quick diagnosis app"
-git branch -M main
-git remote add origin https://github.com/<your-username>/<your-repo>.git
-git push -u origin main
-```
-
-## Vercelにデプロイする
-
-### 方法1: GitHub連携(推奨)
-
-1. [vercel.com](https://vercel.com) にログイン
-2. 「Add New...」→「Project」
-3. 上記でpushしたGitHubリポジトリをImport
-4. Framework Preset は「Other」のままでOK(静的サイトとして検出されます)
-5. 「Deploy」をクリック
-
-push するたびに自動でデプロイされます。
-
-### 方法2: Vercel CLI
-
-```bash
-npm i -g vercel
-vercel        # 初回:対話で設定
-vercel --prod # 本番デプロイ
-```
-
-## カスタマイズ
-
-### 質問を変更する
-
-`js/questions.js` を編集。各質問は次の形式です。
+各質問はリッカート尺度向けに次の構造を持ちます。
 
 ```javascript
 {
-  axis: 'EI', // 'EI' | 'SN' | 'TF' | 'JP'
-  text: '質問文',
-  a: { text: '選択肢A', type: 'E' },
-  b: { text: '選択肢B', type: 'I' },
+  axis: 'EI',          // 'EI' | 'SN' | 'TF' | 'JP'
+  direction: 'E',      // 「そう思う」と答えたときに振れる方向
+  text: '大人数の集まりにいると、エネルギーが湧いてくる。'
 }
 ```
 
-質問数を増減してもロジックはそのまま動きます(同数の場合は左側=E/S/T/Jを優先する仕様)。
+回答は `-2`(全くそう思わない)〜 `+2`(とてもそう思う)の整数値。
 
-### タイプ説明を変更する
+### スコアリング(`js/scoring.js`)
 
-`js/types.js` で `nickname`(ニックネーム)と `desc`(一言説明)を編集してください。
+各回答について次のように加算します。
 
-### 配色・フォントを変更する
+| 回答値 | 加算先 | 加算量 |
+|---|---|---|
+| +2 | direction 側 | +2 |
+| +1 | direction 側 | +1 |
+| 0 | 加算なし | — |
+| -1 | direction の反対側 | +1 |
+| -2 | direction の反対側 | +2 |
 
-`css/styles.css` の冒頭にある `:root` のCSS変数を変更します。
+例:`direction: 'E'` の質問に「-2」と答えた → I に +2
 
-```css
-:root {
-  --bg: #f4ede1;       /* 背景色 */
-  --ink: #1a2238;      /* メインテキスト */
-  --accent: #c2410c;   /* アクセントカラー */
-  /* ... */
-}
+各軸4問 × 最大2点 = サイドあたり最大8点。
+
+### タイプ決定
+
+各軸ごとに左側(E/S/T/J)と右側(I/N/F/P)の合計を比較し、大きいほうの文字を採用。**同点の場合は左側を優先**。4文字を連結して16タイプの1つを返します。
+
+### スコア表示
+
+結果画面では各軸を「E 75% / I 25%」のような割合で表示します。境界値に近いほど両者の差が小さく見えるため、「結果が中間的なのか、はっきりしているのか」が一目でわかります。
+
+### 信ぴょう性のための工夫
+
+- **5段階評価**:「強くそう思う(+2)」と「ややそう思う(+1)」を区別することで、1問あたりの解像度を上げる。実質的には2択16問版より精度が高い
+- **質問の方向性を交互配置**:同じ軸内で `direction` を E→I→E→I... と交互に並べることで、「全部Yes」のように一律回答する人のバイアスを軽減
+- **どちらでもない(0)を許容**:無理に二択を迫らないので、回答精度が上がる
+
+簡易診断なので、結果画面に注意書きを表示しています。
+
+## ローカルで動かす
+
+```bash
+npm start
+# または
+python3 -m http.server 3000
 ```
+
+## Vercelにデプロイ
+
+GitHubにpushしたあと、Vercelで「Add New Project」→ リポジトリを選択 → Deploy。
+Framework Preset は「Other」のままで静的サイトとして公開されます。
+
+## カスタマイズ
+
+### 質問の追加・変更
+
+`js/questions.js` を編集。各軸の問題数は揃えなくても動きますが、軸ごとに最大スコアが変わるため、できるだけ揃えるのを推奨します(現状はパーセンテージ表示で吸収しています)。
+
+### タイプ説明の変更
+
+`js/types.js` の `nickname` と `desc` を編集。
+
+### 配色・フォント
+
+`css/styles.css` の冒頭 `:root` のCSS変数を編集。
 
 ## ライセンス
 

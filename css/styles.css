@@ -155,50 +155,108 @@ body {
   font-size: clamp(20px, 3vw, 24px);
   line-height: 1.5;
   color: var(--ink);
-  margin-bottom: 32px;
-  min-height: 80px;
+  margin-bottom: 36px;
+  min-height: 60px;
 }
 
-.options {
+/* ───── リッカート尺度 ───── */
+.likert {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   gap: 12px;
+  margin-bottom: 12px;
+  padding: 0 4px;
 }
 
-.option {
+.likert-btn {
+  flex: 1;
+  aspect-ratio: 1;
+  max-width: 70px;
+  min-width: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
   background: var(--bg);
-  border: 1.5px solid var(--line);
-  border-radius: 3px;
-  padding: 20px 24px;
-  text-align: left;
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--ink);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.65, 0, 0.35, 1);
   display: flex;
   align-items: center;
-  gap: 16px;
-  width: 100%;
+  justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  color: transparent;
+  position: relative;
 }
 
-.option:hover {
+/* 5段階のサイズ:両端が大きく、中央が小さい */
+.likert-btn[data-value="-2"], .likert-btn[data-value="2"] {
+  max-width: 64px;
+  border-width: 2.5px;
+}
+.likert-btn[data-value="-1"], .likert-btn[data-value="1"] {
+  max-width: 52px;
+}
+.likert-btn[data-value="0"] {
+  max-width: 40px;
+}
+
+.likert-btn:hover {
   border-color: var(--ink);
   background: var(--bg-soft);
-  transform: translateX(4px);
+  transform: scale(1.08);
 }
 
-.option:active {
-  transform: translateX(4px) scale(0.99);
+.likert-btn.selected {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
 }
 
-.option-marker {
+.likert-btn[data-value="-2"].selected,
+.likert-btn[data-value="2"].selected {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.likert-btn:active {
+  transform: scale(0.95);
+}
+
+.likert-labels {
+  display: flex;
+  justify-content: space-between;
   font-family: 'Fraunces', serif;
   font-style: italic;
+  font-size: 13px;
+  color: var(--ink-soft);
+  padding: 0 8px;
+  margin-bottom: 24px;
+}
+
+.nav-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 16px;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  font-family: 'Noto Sans JP', sans-serif;
   font-size: 14px;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.2s ease;
+}
+
+.btn-ghost:hover:not(:disabled) {
   color: var(--accent);
-  min-width: 20px;
+}
+
+.btn-ghost:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 /* ───── スタート/結果画面 ───── */
@@ -263,7 +321,6 @@ body {
   cursor: pointer;
   border-radius: 2px;
   transition: all 0.2s ease;
-  position: relative;
 }
 
 .btn:hover {
@@ -321,22 +378,88 @@ body {
   margin: 0 auto 40px;
 }
 
+/* ───── スコア内訳 ───── */
+.score-breakdown {
+  max-width: 480px;
+  margin: 0 auto 32px;
+  text-align: left;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 24px 0;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+}
+
+.score-row:last-child {
+  margin-bottom: 0;
+}
+
+.score-label {
+  width: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.score-label.active {
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.score-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.score-pct {
+  width: 40px;
+  text-align: right;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.score-pct.active {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.result-disclaimer {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  margin-bottom: 32px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .result-actions {
   display: flex;
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--ink);
-  border: 1.5px solid var(--ink);
-}
-
-.btn-outline:hover {
-  background: var(--ink);
-  color: var(--paper);
 }
 
 /* ───── 装飾 ───── */
@@ -351,18 +474,12 @@ body {
 
 /* ───── アニメーション ───── */
 .fade-in {
-  animation: fadeIn 0.5s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation: fadeIn 0.45s cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .hidden {
@@ -370,15 +487,10 @@ body {
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 24px 16px 60px;
-  }
-  .card,
-  .intro,
-  .result {
-    padding: 32px 20px;
-  }
-  .meta-grid {
-    gap: 24px;
-  }
+  .container { padding: 24px 16px 60px; }
+  .card, .intro, .result { padding: 32px 20px; }
+  .meta-grid { gap: 24px; }
+  .likert { gap: 6px; }
+  .likert-btn { min-width: 38px; }
+  .likert-labels { font-size: 11px; }
 }

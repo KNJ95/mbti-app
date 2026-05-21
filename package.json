@@ -1,12 +1,13 @@
 {
   "name": "mbti-quick-diagnosis",
-  "version": "1.0.0",
-  "description": "5分で完了するMBTI簡易診断アプリ。社内研修・イベント向け。",
+  "version": "2.1.0",
+  "description": "16問・5段階評価で判定するMBTI簡易診断アプリ。社内研修・イベント向け。",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "npx serve .",
     "start": "npx serve ."
   },
-  "keywords": ["mbti", "personality-test", "training"],
+  "keywords": ["mbti", "personality-test", "training", "likert"],
   "license": "MIT"
 }
